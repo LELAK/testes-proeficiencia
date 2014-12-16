@@ -17,7 +17,7 @@ import br.com.lelak.teste.exception.CloneNotSupportedRuntimeException;
 @ManagedBean
 @ViewScoped
 @Entity
-public class User implements Cloneable, Serializable, EntityBean {
+public class User implements Cloneable, Serializable {
 
 	private static final long serialVersionUID = -5430366449139440985L;
 	
@@ -127,12 +127,11 @@ public class User implements Cloneable, Serializable, EntityBean {
 	}
 	
 	public void reset(){
-		id = null;
-		name = "";
-		lastName = "";
-		email = "";
-		phone = "";
-		instruments = null;
+		this.id = null;
+		this.name = "";
+		this.lastName = "";
+		this.email = "";
+		this.phone = "";
 	}
-
+	
 }

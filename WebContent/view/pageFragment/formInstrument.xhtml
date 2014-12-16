@@ -8,20 +8,19 @@
 	<h:form id="formInstrument" enctype="multipart/form-data">
 		<p:panelGrid columns="2" layout="grid">
 			<p:outputLabel for="name" value="Nome:" />
-			<p:inputText id="name" value="#{instrumentMB.name}"/>
+			<p:inputText id="name" value="#{instrument.name}"/>
 
 			<p:outputLabel for="instrumentUser" value="Responsável pelo instrumento:" />
-			<p:selectOneMenu id="instrumentUser" value="#{instrumentMB.user}" style="width:218px" converter="EntityConverter">
-				<p:ajax event="change" listener="#{instrumentMB.userChangeHandler}" />
-                <f:selectItem itemLabel="Selecione um usuário" itemValue="" noSelectionOption="true" />
-                <f:selectItems value="#{userMB.list}" />
+			<p:selectOneMenu id="instrumentUser" value="#{instrumentMB.userId}" style="width:218px" >
+                <f:selectItem itemLabel="Selecione um usuário" itemValue="" />
+                <f:selectItems value="#{userMB.list}" var="user" itemValue="#{user.id}" itemLabel="#{user.name}" />
             </p:selectOneMenu>
-
+            
 			<p:fileUpload id="imageUpload" fileUploadListener="#{instrumentMB.fileUploadHandler}" mode="advanced" auto="true" skinSimple="true" update="imageView" 
 			allowTypes="/(\.|\/)(gif|jpe?g|png)$/" label="Selecione uma imagem"/>
-			<p:graphicImage id="imageView" name="#{instrumentMB.tempImageName}" style="height: 77px; width: 100px"/>
+			<p:graphicImage id="imageView" name="#{instrumentMB.tempImageFilename}" style="height: 77px; width: 100px"/>
             <p:commandButton id="btnSaveInstrument" value="Salvar" actionListener="#{instrumentMB.toSave()}" type="submit" />
-            <p:commandButton value="Limpar" type="reset" />
+            <p:commandButton value="Limpar" actionListener="#{instrumentMB.toReset()}" />
 		</p:panelGrid>
 	</h:form>
 </html>

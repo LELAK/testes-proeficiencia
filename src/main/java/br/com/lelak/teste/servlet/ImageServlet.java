@@ -14,6 +14,7 @@ import br.com.lelak.teste.persistence.dao.InstrumentDAO;
 import br.com.lelak.teste.util.ExtensionEnum;
 import br.com.lelak.teste.util.FileUtils;
 import br.com.lelak.teste.util.ImageManager;
+import br.com.lelak.teste.util.Validator;
 
 @WebServlet("/ImageServlet")
 public class ImageServlet extends HttpServlet {
@@ -26,7 +27,7 @@ public class ImageServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String instrumentId = request.getParameter("id");
-		if(instrumentId != null && !instrumentId.trim().isEmpty()){
+		if(Validator.isEmpty(instrumentId)){
 			bytes = instrumentDAO().findImageById(Long.parseLong(instrumentId));
 		} 
 		if(bytes == null){

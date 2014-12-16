@@ -29,15 +29,11 @@
 			<h:outputText value="#{user.phone}" />
 		</p:column>
 		<p:column>
-			<p:commandButton id="btnDeleteUser" actionListener="#{userMB.toDelete(user.id)}" icon="ui-icon-trash" />
+			<p:commandButton id="btnEdit" actionListener="#{userMB.toEdit(user.id)}" icon="ui-icon-pencil" />
 		</p:column>
 		<p:column>
-			<p:commandButton id="btnEdit" actionListener="#{userMB.toEdit(user.id)}" icon="ui-icon-pencil" />
-			<p:overlayPanel id="moviePanel" for="btnEdit" dynamic="true" style="width:600px">
-				<ui:include src="formEditUser.xhtml" />
-			</p:overlayPanel>
+			<p:commandButton id="btnDeleteUser" actionListener="#{userMB.toDelete(user.id)}" icon="ui-icon-trash" />
 		</p:column>
-		
 		<p:columnGroup type="footer">
 			<p:row>
 				<p:column colspan="4" headerText="" />

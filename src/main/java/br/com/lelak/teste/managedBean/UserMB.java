@@ -1,6 +1,5 @@
 package br.com.lelak.teste.managedBean;
 
-import java.io.Serializable;
 import java.util.List;
 
 import javax.faces.bean.ManagedBean;
@@ -10,26 +9,17 @@ import javax.faces.bean.RequestScoped;
 import org.primefaces.context.RequestContext;
 
 import br.com.lelak.teste.model.User;
-import br.com.lelak.teste.persistence.DAOFactory;
 import br.com.lelak.teste.persistence.dao.UserDAO;
+import br.com.lelak.teste.util.Validator;
 
 @ManagedBean
 @RequestScoped
-public class UserMB implements Serializable {
+public class UserMB extends AbstractManagedBean<User> {
 
 	private static final long serialVersionUID = 924020269470990794L;
-	private List<User> list;
 
 	@ManagedProperty(value = "#{user}")
 	private User userForm;
-	
-	public UserMB() {
-		list = userDAO().findAll();
-	}
-
-	public List<User> getList() {
-		return list;
-	}
 
 	public User getUserForm() {
 		return userForm;
@@ -38,44 +28,60 @@ public class UserMB implements Serializable {
 	public void setUserForm(User userForm) {
 		this.userForm = userForm;
 	}
+	
+	@Override
+	public List<User> getList() {
+		return userDAO().findAll();
+	}
 
+	@Override
 	public void toSave() {
+		if(Validator.isEmpty(userForm.getName())){
+			return;
+		}
+		
 		User clone = userForm.clone();
-		userDAO().save(clone);
-		list.add(clone);
+		if (clone.getId() == null) {
+			saveUser(clone);
+		} else {
+			updateUser(clone);
+		}
+		toReset();
+		updateInstrumentView();
+	}
+
+	private void updateUser(User user) {
+		userDAO().update(user);
+	}
+
+	private void saveUser(User user) {
+		userDAO().save(user);
+	}
+
+	@Override
+	public void toReset() {
 		userForm.reset();
-		onPostExecute();
+		updateUserView();
 	}
 
 	public void toDelete(Long userId) {
 		UserDAO dao = userDAO();
 		User user = dao.findById(userId);
-		list.remove(user);
 		dao.remove(user);
-		if(userId.equals(userForm.getId())){
+		if (userId.equals(userForm.getId())) {
 			userForm.reset();
 		}
-		onPostExecute();
+		updateUserView();
+		updateInstrumentView();
 	}
 
 	public void toEdit(Long userId) {
 		User user = userDAO().findById(userId);
 		userForm.clone(user);
-		RequestContext.getCurrentInstance().update("tabView:formUserUpdate");
-		RequestContext.getCurrentInstance().update("tabView:tableUser");
-	}
-	public void toUpdate() {
-		userDAO().update(userForm.clone());
-		userForm.reset();
-		RequestContext.getCurrentInstance().update("tabView:formUserUpdate");
-		RequestContext.getCurrentInstance().update("tabView:tableUser");
+		updateUserView();
 	}
 
-	private UserDAO userDAO() {
-		return DAOFactory.createDAO(UserDAO.class);
-	}
-
-	private void onPostExecute() {
+	private void updateUserView() {
 		RequestContext.getCurrentInstance().update("tabView:formUser");
 		RequestContext.getCurrentInstance().update("tabView:tableUser");
 	}
